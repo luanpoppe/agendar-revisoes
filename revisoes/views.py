@@ -9,6 +9,13 @@ def revisoesView(request):
   if(request.method == "POST"):
     print("é um post")
 
+
+
+
+
+
+
+
   if(request.method == "GET"):
 
     revisoes = RevisoesModel.objects.all()
