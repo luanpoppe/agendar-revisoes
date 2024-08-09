@@ -5,4 +5,4 @@ from revisoes.models import RevisoesModel
 class RevisoesSerializer(ModelSerializer):
   class Meta:
     model = RevisoesModel
-    fields = ["__all__"]
+    exclude = []
