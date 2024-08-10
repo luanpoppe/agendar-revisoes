@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 import math
 
 from revisoes.models import RevisoesModel
-from revisoes.serializers import RevisoesSerializer
 
 def daysFromToday(dias):
   return datetime.now() + timedelta(days=dias)
@@ -24,13 +23,14 @@ def adicionarRevisao(intervaloDaRevisao: int):
   if (intervaloDaRevisao < 3):
     return formatDate(daysFromToday(intervaloDaRevisao))
   else:
-    maximo = math.ceil(intervaloDaRevisao * 1.1)
-    diferencaIntervaloMax = maximo - intervaloDaRevisao
+    # valores baseados no intervalo de 3 dias
+    maximo = math.ceil(intervaloDaRevisao * 1.1) #4
+    diferencaIntervaloMax = maximo - intervaloDaRevisao #1
     listaDatas = []
     listaObjetosCompletos = []
     listaRevisoesPorDia = []
     
-    for i in range(intervaloDaRevisao - diferencaIntervaloMax, intervaloDaRevisao + diferencaIntervaloMax + 1):
+    for i in range(intervaloDaRevisao - diferencaIntervaloMax, intervaloDaRevisao + diferencaIntervaloMax + 1): #range(2, 4)
       listaDatas.append(formatDate(daysFromToday(i)))
       data = formatDate(daysFromToday(i)).split("-")
       data = datetime(year=int(data[0]), month=int(data[1]), day=int(data[2])).date()
@@ -42,6 +42,6 @@ def adicionarRevisao(intervaloDaRevisao: int):
 
     menorValor = min(listaRevisoesPorDia)
     
-    for index in range(0, len(listaRevisoesPorDia)):
+    for index in range(0, len(listaRevisoesPorDia)): #range(0,2)
       if (menorValor == listaRevisoesPorDia[index]):
         return listaDatas[index]
