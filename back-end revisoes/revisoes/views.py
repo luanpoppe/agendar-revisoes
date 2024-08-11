@@ -27,6 +27,33 @@ def revisoesView(request):
 
     return Response(serializer.data)
 
+@api_view(["GET", "PATCH"])
+def updateReview(request, id):
+  if request.method == "PATCH":
+    try:
+      print('\n\n')
+      model = RevisoesModel.objects.get(pk=id)
+      serializer = RevisoesSerializer(model, data=request.data, partial=True)
+
+      print("entrando no try")
+      if serializer.is_valid(raise_exception=True):
+        intervalo = serializer.validated_data["intervalo_revisao"]
+        serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo)
+        serializer.save()
+        return Response(serializer.data)
+    except:
+      return Response({"msg": "Passe um intervalo para a próxima revisão"}, status=400)
+    
+  if request.method == "GET":
+    try:
+      model = RevisoesModel.objects.get(pk=id)
+    except:
+      return Response({
+        "msg": f"A revisão com o id {id} não existe"
+      })
+    serializer = RevisoesSerializer(model)
+    return Response(serializer.data)
+
 @api_view(["GET"])
 def revisoesHojeView(request):
   if request.method == "GET":
