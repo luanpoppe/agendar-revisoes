@@ -42,6 +42,7 @@ def updateReview(request, id):
         if serializer.is_valid(raise_exception=True):
           intervalo = serializer.validated_data["intervalo_revisao"]
           serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo)
+          serializer.validated_data["ultima_data"] = formatDate(datetime.now())
           serializer.save()
           return Response(serializer.data)
       except:
