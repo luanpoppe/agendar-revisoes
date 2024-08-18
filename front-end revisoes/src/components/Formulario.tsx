@@ -44,7 +44,7 @@ export function Formulario() {
         </label>
         <input type="text" className="form-control" id="intervalo" />
       </div>
-      <div className="mb-3">
+      {/* <div className="mb-3">
         <label htmlFor="data" className="form-label">
           Próxima Data
         </label>
@@ -60,7 +60,7 @@ export function Formulario() {
           id="ultima-data"
           defaultValue={dataHojeFormatada}
         />
-      </div>
+      </div> */}
       <div className="mb-3">
         <label htmlFor="dificuldade" className="form-label">
           Dificuldade
