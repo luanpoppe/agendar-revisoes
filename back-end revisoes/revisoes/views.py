@@ -1,8 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from revisoes.models import RevisoesModel
-from revisoes.serializers import RevisoesSerializer
+from revisoes.models import RevisoesModel, PequenasRevisoesModel
+from revisoes.serializers import RevisoesSerializer, PequenasRevisoesSerializer
 from utils.manage_data import adicionarRevisao, daysFromToday, formatDate
 from datetime import datetime
 
@@ -65,3 +65,55 @@ def revisoesHojeView(request):
     revisoes = RevisoesModel.objects.filter(proxima_data__lte=data)
     serializer = RevisoesSerializer(revisoes, many=True)
     return Response(serializer.data)
+
+
+@api_view(["GET", "POST"])
+def pequenasRevisoesView(request):
+  if(request.method == "POST"):
+    serializer = PequenasRevisoesSerializer(data=request.data)
+
+    if serializer.is_valid(raise_exception=True):
+      intervalo = serializer.validated_data["intervalo_revisao"]
+      serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo)
+      valor_salvo = serializer.save()
+
+      model = PequenasRevisoesModel.objects.get(pk=valor_salvo.pk)
+      responseSerializer = PequenasRevisoesSerializer(model)
+      return Response(responseSerializer.data)
+
+  if(request.method == "GET"):
+
+    revisoes = PequenasRevisoesModel.objects.all()
+    serializer = PequenasRevisoesSerializer(revisoes, many=True)
+
+    return Response(serializer.data)
+
+@api_view(["GET", "PATCH", "DELETE"])
+def updatePequenasRevisoes(request, id):
+  try:
+    model = PequenasRevisoesModel.objects.get(pk=id)
+    serializer = PequenasRevisoesSerializer(model, data=request.data, partial=True)
+    
+    if request.method == "GET":
+      serializer = PequenasRevisoesSerializer(model)
+      return Response(serializer.data)
+    
+    if request.method == "PATCH":
+      try:
+        if serializer.is_valid(raise_exception=True):
+          intervalo = serializer.validated_data["intervalo_revisao"]
+          serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo)
+          serializer.validated_data["ultima_data"] = formatDate(datetime.now())
+          serializer.save()
+          return Response(serializer.data)
+      except:
+        return Response({"msg": "Passe um intervalo para a próxima revisão"}, status=400)
+
+    if request.method == "DELETE":
+        model.delete()
+        return Response({"msg": f"Item de id {id} deletado com sucesso"})
+    
+  except:
+    return Response({
+      "msg": f"A revisão com o id {id} não existe"
+    })
