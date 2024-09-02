@@ -117,3 +117,12 @@ def updatePequenasRevisoes(request, id):
     return Response({
       "msg": f"A revisão com o id {id} não existe"
     })
+
+@api_view(["GET"])
+def pequenasRevisoesHojeView(request):
+  if request.method == "GET":
+    data = formatDate(daysFromToday(0)).split("-")
+    data = datetime(year=int(data[0]), month=int(data[1]), day=int(data[2])).date()
+    revisoes = PequenasRevisoesModel.objects.filter(proxima_data__lte=data)
+    serializer = PequenasRevisoesSerializer(revisoes, many=True)
+    return Response(serializer.data)
