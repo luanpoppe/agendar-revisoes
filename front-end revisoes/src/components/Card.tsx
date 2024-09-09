@@ -1,7 +1,18 @@
+import axios from "axios";
 import { Botao } from "./Botao";
 
 /* eslint-disable react/prop-types */
 export function Card(props: { revisao: Revisao }) {
+  function revisarCard() {
+    const input = document.getElementById(`input-${props.revisao.id}`) as HTMLInputElement
+    if (input.value) {
+      props.revisao.intervalo_revisao = parseInt(input.value)
+      props.revisao.proxima_data = undefined
+      console.log('props.revisao: ', props.revisao)
+      // axios.patch(`http://localhost:8000/revisao/${props.revisao.id}`, props.revisao)
+    }
+  }
+
   return (
     <>
       <div className="card" style={{ width: "18rem" }}>
@@ -27,7 +38,11 @@ export function Card(props: { revisao: Revisao }) {
           >
             Link do Notion
           </a>
-          {/* <Botao clicarBotao={}>Revisado Hoje</Botao> */}
+          <div className="justify-content-center mt-3">
+            <label className="mb-1" htmlFor={`input-${props.revisao.id}`}>Intervalo próxima Revisão: </label>
+            <input className="mb-3" type="number" id={`input-${props.revisao.id}`}/>
+            <Botao color="primary" clicarBotao={revisarCard}>Revisado Hoje</Botao>
+          </div>
         </div>
       </div>
     </>

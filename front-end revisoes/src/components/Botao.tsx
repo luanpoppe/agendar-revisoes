@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-export function Botao(props) {
+export function Botao(props: {color: string, children?: string, clicarBotao: any}) {
   return (
     <button
       type="button"
