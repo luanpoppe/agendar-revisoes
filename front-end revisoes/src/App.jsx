@@ -23,7 +23,7 @@ function App() {
       <Titulo></Titulo>
       <Formulario></Formulario>
       <h3>Pegue as revisões do dia aqui:</h3>
-      <Botao clicarBotao={fazerGet} color={"primary"}>
+      <Botao buttonId="fazer-get" clicarBotao={fazerGet} color={"primary"}>
         Clique aqui
       </Botao>
       {cards.map((item) => {

@@ -9,7 +9,10 @@ export function Card(props: { revisao: Revisao }) {
       props.revisao.intervalo_revisao = parseInt(input.value)
       props.revisao.proxima_data = undefined
       console.log('props.revisao: ', props.revisao)
-      // axios.patch(`http://localhost:8000/revisao/${props.revisao.id}`, props.revisao)
+      axios.patch(`http://localhost:8000/revisao/${props.revisao.id}`, props.revisao).then((res) => {
+        const botaoFazerGet = document.getElementById("fazer-get")
+        botaoFazerGet.click()
+      })
     }
   }
 
