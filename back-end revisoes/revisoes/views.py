@@ -5,7 +5,11 @@ from revisoes.models import RevisoesModel, PequenasRevisoesModel
 from revisoes.serializers import RevisoesSerializer, PequenasRevisoesSerializer
 from utils.manage_data import adicionarRevisao, daysFromToday, formatDate
 from datetime import datetime
+from drf_spectacular.utils import extend_schema
 
+@extend_schema(
+    request=RevisoesSerializer,
+)
 @api_view(["GET", "POST"])
 def revisoesView(request):
   if(request.method == "POST"):
@@ -13,7 +17,7 @@ def revisoesView(request):
 
     if serializer.is_valid(raise_exception=True):
       intervalo = serializer.validated_data["intervalo_revisao"]
-      serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo)
+      serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo, RevisoesModel)
       valor_salvo = serializer.save()
 
       model = RevisoesModel.objects.get(pk=valor_salvo.pk)
@@ -41,7 +45,7 @@ def updateReview(request, id):
       try:
         if serializer.is_valid(raise_exception=True):
           intervalo = serializer.validated_data["intervalo_revisao"]
-          serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo)
+          serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo, RevisoesModel)
           serializer.validated_data["ultima_data"] = formatDate(datetime.now())
           serializer.save()
           return Response(serializer.data)
@@ -66,7 +70,6 @@ def revisoesHojeView(request):
     serializer = RevisoesSerializer(revisoes, many=True)
     return Response(serializer.data)
 
-
 @api_view(["GET", "POST"])
 def pequenasRevisoesView(request):
   if(request.method == "POST"):
@@ -74,7 +77,7 @@ def pequenasRevisoesView(request):
 
     if serializer.is_valid(raise_exception=True):
       intervalo = serializer.validated_data["intervalo_revisao"]
-      serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo)
+      serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo, PequenasRevisoesModel)
       valor_salvo = serializer.save()
 
       model = PequenasRevisoesModel.objects.get(pk=valor_salvo.pk)
@@ -102,7 +105,7 @@ def updatePequenasRevisoes(request, id):
       try:
         if serializer.is_valid(raise_exception=True):
           intervalo = serializer.validated_data["intervalo_revisao"]
-          serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo)
+          serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo, PequenasRevisoesModel)
           serializer.validated_data["ultima_data"] = formatDate(datetime.now())
           serializer.save()
           return Response(serializer.data)

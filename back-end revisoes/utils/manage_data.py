@@ -19,7 +19,7 @@ def formatDate(data):
 # Adicionar a revisão nessa data
 
 
-def adicionarRevisao(intervaloDaRevisao: int):
+def adicionarRevisao(intervaloDaRevisao: int, Model):
   if (intervaloDaRevisao < 2):
     return formatDate(daysFromToday(intervaloDaRevisao))
   else:
@@ -29,8 +29,8 @@ def adicionarRevisao(intervaloDaRevisao: int):
       umDia = datetime(year=int(datas[0][0]), month=int(datas[0][1]), day=int(datas[0][2])).date()
       doisDias = datetime(year=int(datas[1][0]), month=int(datas[1][1]), day=int(datas[1][2])).date()
 
-      revisoesEmUmDia = RevisoesModel.objects.filter(proxima_data=umDia)
-      revisoesEmDoisDias = RevisoesModel.objects.filter(proxima_data=doisDias)
+      revisoesEmUmDia = Model.objects.filter(proxima_data=umDia)
+      revisoesEmDoisDias = Model.objects.filter(proxima_data=doisDias)
       if len(revisoesEmDoisDias) > len(revisoesEmUmDia):
         return umDia
       else:
@@ -47,7 +47,7 @@ def adicionarRevisao(intervaloDaRevisao: int):
       listaDatas.append(formatDate(daysFromToday(i)))
       data = formatDate(daysFromToday(i)).split("-")
       data = datetime(year=int(data[0]), month=int(data[1]), day=int(data[2])).date()
-      listaObjetosCompletos.append(RevisoesModel.objects.filter(proxima_data=data))
+      listaObjetosCompletos.append(Model.objects.filter(proxima_data=data))
 
     for i in listaObjetosCompletos:
       print('i', i)
