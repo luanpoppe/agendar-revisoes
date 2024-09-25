@@ -26,7 +26,7 @@ def revisoesView(request):
 
   if(request.method == "GET"):
 
-    revisoes = RevisoesModel.objects.all()
+    revisoes = RevisoesModel.objects.all().order_by('intervalo_revisao')
     serializer = RevisoesSerializer(revisoes, many=True)
 
     return Response(serializer.data)
@@ -66,7 +66,7 @@ def revisoesHojeView(request):
   if request.method == "GET":
     data = formatDate(daysFromToday(0)).split("-")
     data = datetime(year=int(data[0]), month=int(data[1]), day=int(data[2])).date()
-    revisoes = RevisoesModel.objects.filter(proxima_data__lte=data)
+    revisoes = RevisoesModel.objects.filter(proxima_data__lte=data).order_by('intervalo_revisao')
     serializer = RevisoesSerializer(revisoes, many=True)
     return Response(serializer.data)
 
@@ -86,7 +86,7 @@ def pequenasRevisoesView(request):
 
   if(request.method == "GET"):
 
-    revisoes = PequenasRevisoesModel.objects.all()
+    revisoes = PequenasRevisoesModel.objects.all().order_by('intervalo_revisao')
     serializer = PequenasRevisoesSerializer(revisoes, many=True)
 
     return Response(serializer.data)
@@ -126,6 +126,6 @@ def pequenasRevisoesHojeView(request):
   if request.method == "GET":
     data = formatDate(daysFromToday(0)).split("-")
     data = datetime(year=int(data[0]), month=int(data[1]), day=int(data[2])).date()
-    revisoes = PequenasRevisoesModel.objects.filter(proxima_data__lte=data)
+    revisoes = PequenasRevisoesModel.objects.filter(proxima_data__lte=data).order_by('intervalo_revisao')
     serializer = PequenasRevisoesSerializer(revisoes, many=True)
     return Response(serializer.data)
