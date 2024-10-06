@@ -12,8 +12,8 @@ function App() {
   let [cardsPequenasRevisoes, setCardsPequenasRevisoes] = useState([]);
 
   function carregarRevisoes() {
-    getRevisoes()
-    getPequenasRevisoes()
+    getRevisoes();
+    getPequenasRevisoes();
   }
 
   function getRevisoes() {
@@ -25,11 +25,13 @@ function App() {
   }
 
   function getPequenasRevisoes() {
-    axios.get("http://127.0.0.1:8000/revisoes-pequenas-hoje/").then((resposta) => {
-      // cardsPequenasRevisoes = resposta.data; -> não pode passar assim, tem que passar com setCardsRevisoes
-      setCardsPequenasRevisoes(resposta.data);
-      console.log(resposta, cardsPequenasRevisoes);
-    });
+    axios
+      .get("http://127.0.0.1:8000/revisoes-pequenas-hoje/")
+      .then((resposta) => {
+        // cardsPequenasRevisoes = resposta.data; -> não pode passar assim, tem que passar com setCardsRevisoes
+        setCardsPequenasRevisoes(resposta.data);
+        console.log(resposta, cardsPequenasRevisoes);
+      });
   }
 
   return (
@@ -37,7 +39,11 @@ function App() {
       <Titulo></Titulo>
       <Formulario></Formulario>
       <h3>Pegue as revisões do dia aqui:</h3>
-      <Botao buttonId="fazer-get" clicarBotao={carregarRevisoes} color={"primary"}>
+      <Botao
+        buttonId="fazer-get"
+        clicarBotao={carregarRevisoes}
+        color={"primary"}
+      >
         Clique aqui
       </Botao>
       <section className="d-flex justify-content-between">
@@ -48,7 +54,9 @@ function App() {
         </div>
         <div>
           {cardsPequenasRevisoes.map((item) => {
-            return <Card key={item.id} revisao={item}></Card>;
+            return (
+              <Card isRevisaoPequena={true} key={item.id} revisao={item}></Card>
+            );
           })}
         </div>
       </section>
