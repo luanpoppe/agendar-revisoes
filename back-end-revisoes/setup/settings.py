@@ -135,8 +135,9 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:5173',
-    "http://localhost"
+    "http://localhost:5173",
+    "http://localhost",
+    "https://agendar-revisoes-crtt.vercel.app/*"
 ]
 
 
