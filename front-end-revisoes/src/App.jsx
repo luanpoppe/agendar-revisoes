@@ -5,6 +5,7 @@ import { Botao } from "./components/Botao.tsx";
 import { Card } from "./components/Card.tsx";
 import { Formulario } from "./components/Formulario.tsx";
 import axios from "axios";
+import { apiUrl } from "./environments";
 
 function App() {
   // inicializado quando carrega a página
@@ -17,7 +18,7 @@ function App() {
   }
 
   function getRevisoes() {
-    axios.get("http://127.0.0.1:8000/revisoes-hoje/").then((resposta) => {
+    axios.get(`${apiUrl}/revisoes-hoje/`).then((resposta) => {
       // cardsRevisoes = resposta.data; -> não pode passar assim, tem que passar com setCardsRevisoes
       setCardsRevisoes(resposta.data);
       console.log(resposta, cardsRevisoes);
@@ -25,13 +26,11 @@ function App() {
   }
 
   function getPequenasRevisoes() {
-    axios
-      .get("http://127.0.0.1:8000/revisoes-pequenas-hoje/")
-      .then((resposta) => {
-        // cardsPequenasRevisoes = resposta.data; -> não pode passar assim, tem que passar com setCardsRevisoes
-        setCardsPequenasRevisoes(resposta.data);
-        console.log(resposta, cardsPequenasRevisoes);
-      });
+    axios.get(`${apiUrl}/revisoes-pequenas-hoje/`).then((resposta) => {
+      // cardsPequenasRevisoes = resposta.data; -> não pode passar assim, tem que passar com setCardsRevisoes
+      setCardsPequenasRevisoes(resposta.data);
+      console.log(resposta, cardsPequenasRevisoes);
+    });
   }
 
   return (

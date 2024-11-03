@@ -1,4 +1,5 @@
 import axios from "axios";
+import { apiUrl } from "../environments";
 
 export function Formulario() {
   const dataHoje = new Date();
@@ -18,7 +19,7 @@ export function Formulario() {
       url_notion: window.document.getElementById("url").value,
     };
 
-    axios.post("http://127.0.0.1:8000/revisoes/", userData).then((resposta) => {
+    axios.post(`${apiUrl}/revisoes/`, userData).then((resposta) => {
       console.log(resposta);
       return;
     });
