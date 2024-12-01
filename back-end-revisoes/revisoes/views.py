@@ -1,8 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from revisoes.models import RevisoesModel, PequenasRevisoesModel
-from revisoes.serializers import RevisoesSerializer, PequenasRevisoesSerializer
+from revisoes.models import RevisoesModel
+from revisoes.serializers import RevisoesSerializer
 from utils.manage_data import adicionarRevisao, daysFromToday, formatDate
 from datetime import datetime
 from drf_spectacular.utils import extend_schema
@@ -66,46 +66,46 @@ def revisoesHojeView(request):
   if request.method == "GET":
     data = formatDate(daysFromToday(0)).split("-")
     data = datetime(year=int(data[0]), month=int(data[1]), day=int(data[2])).date()
-    revisoes = RevisoesModel.objects.filter(proxima_data__lte=data).order_by('intervalo_revisao')
+    revisoes = RevisoesModel.objects.filter(proxima_data__lte=data, ativo=True).order_by('intervalo_revisao')
     serializer = RevisoesSerializer(revisoes, many=True)
     return Response(serializer.data)
 
 @api_view(["GET", "POST"])
 def pequenasRevisoesView(request):
   if(request.method == "POST"):
-    serializer = PequenasRevisoesSerializer(data=request.data)
+    serializer = RevisoesSerializer(data=request.data)
 
     if serializer.is_valid(raise_exception=True):
       intervalo = serializer.validated_data["intervalo_revisao"]
-      serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo, PequenasRevisoesModel)
+      serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo, RevisoesModel)
       valor_salvo = serializer.save()
 
-      model = PequenasRevisoesModel.objects.get(pk=valor_salvo.pk)
-      responseSerializer = PequenasRevisoesSerializer(model)
+      model = RevisoesModel.objects.get(pk=valor_salvo.pk)
+      responseSerializer = RevisoesSerializer(model)
       return Response(responseSerializer.data)
 
   if(request.method == "GET"):
 
-    revisoes = PequenasRevisoesModel.objects.all().order_by('intervalo_revisao')
-    serializer = PequenasRevisoesSerializer(revisoes, many=True)
+    revisoes = RevisoesModel.objects.all().order_by('intervalo_revisao')
+    serializer = RevisoesSerializer(revisoes, many=True)
 
     return Response(serializer.data)
 
 @api_view(["GET", "PATCH", "DELETE"])
 def updatePequenasRevisoes(request, id):
   try:
-    model = PequenasRevisoesModel.objects.get(pk=id)
-    serializer = PequenasRevisoesSerializer(model, data=request.data, partial=True)
+    model = RevisoesModel.objects.get(pk=id)
+    serializer = RevisoesSerializer(model, data=request.data, partial=True)
     
     if request.method == "GET":
-      serializer = PequenasRevisoesSerializer(model)
+      serializer = RevisoesSerializer(model)
       return Response(serializer.data)
     
     if request.method == "PATCH":
       try:
         if serializer.is_valid(raise_exception=True):
           intervalo = serializer.validated_data["intervalo_revisao"]
-          serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo, PequenasRevisoesModel)
+          serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo, RevisoesModel)
           serializer.validated_data["ultima_data"] = formatDate(datetime.now())
           serializer.save()
           return Response(serializer.data)
@@ -126,6 +126,6 @@ def pequenasRevisoesHojeView(request):
   if request.method == "GET":
     data = formatDate(daysFromToday(0)).split("-")
     data = datetime(year=int(data[0]), month=int(data[1]), day=int(data[2])).date()
-    revisoes = PequenasRevisoesModel.objects.filter(proxima_data__lte=data).order_by('intervalo_revisao')
-    serializer = PequenasRevisoesSerializer(revisoes, many=True)
+    revisoes = RevisoesModel.objects.filter(proxima_data__lte=data, ativo="True").order_by('intervalo_revisao')
+    serializer = RevisoesSerializer(revisoes, many=True)
     return Response(serializer.data)
