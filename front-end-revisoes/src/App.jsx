@@ -45,17 +45,10 @@ function App() {
       >
         Clique aqui
       </Botao>
-      <section className="d-flex justify-content-between">
-        <div>
+      <section>
+        <div className="d-flex flex-column align-content-center flex-wrap">
           {cardsRevisoes.map((item) => {
             return <Card key={item.id} revisao={item}></Card>;
-          })}
-        </div>
-        <div>
-          {cardsPequenasRevisoes.map((item) => {
-            return (
-              <Card isRevisaoPequena={true} key={item.id} revisao={item}></Card>
-            );
           })}
         </div>
       </section>
