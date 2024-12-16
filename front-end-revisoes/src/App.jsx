@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { Titulo } from "./components/Titulo.tsx";
 import { Botao } from "./components/Botao.tsx";
@@ -11,6 +11,12 @@ function App() {
   // inicializado quando carrega a página
   let [cardsRevisoes, setCardsRevisoes] = useState([]);
   let [cardsPequenasRevisoes, setCardsPequenasRevisoes] = useState([]);
+  let [qtsCardsMostrar, setQtsCardsMostrar] = useState(1);
+
+  useEffect(() => {
+    carregarRevisoes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function carregarRevisoes() {
     getRevisoes();
@@ -34,7 +40,7 @@ function App() {
   }
 
   return (
-    <Fragment>
+    <>
       <Titulo></Titulo>
       <Formulario></Formulario>
       <h3>Pegue as revisões do dia aqui:</h3>
@@ -47,12 +53,21 @@ function App() {
       </Botao>
       <section>
         <div className="d-flex flex-column align-content-center flex-wrap">
-          {cardsRevisoes.map((item) => {
+          {cardsRevisoes.slice(0, qtsCardsMostrar).map((item) => {
             return <Card key={item.id} revisao={item}></Card>;
           })}
         </div>
       </section>
-    </Fragment>
+
+      <Botao
+        color={"secondary"}
+        clicarBotao={() => {
+          setQtsCardsMostrar((qtsCardsMostrar += 2));
+        }}
+      >
+        Carregar Mais
+      </Botao>
+    </>
   );
 }
 
