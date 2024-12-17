@@ -100,9 +100,11 @@ def revisoesHojeView(request):
     if request.method == "GET":
         data = formatDate(daysFromToday(0)).split("-")
         data = datetime(year=int(data[0]), month=int(data[1]), day=int(data[2])).date()
-        revisoes = AssuntoRevisaoModel.objects.filter(
-            proxima_data__lte=data, ativo=True
-        ).order_by("intervalo_revisao")
+        revisoes = (
+            AssuntoRevisaoModel.objects.filter(proxima_data__lte=data, ativo=True)
+            .order_by("intervalo_revisao")
+            .order_by("nome")
+        )
         serializer = AssuntosSerializer(revisoes, many=True)
         return Response(serializer.data)
 
