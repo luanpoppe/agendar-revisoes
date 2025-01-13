@@ -1,7 +1,13 @@
 import axios from "axios";
 import { apiUrl } from "../environments";
+import { Loading } from "./Loading";
 
-export function Formulario() {
+type Props = {
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export function Formulario({ isLoading, setIsLoading }: Props) {
   const dataHoje = new Date();
   const dataHojeFormatada = `${dataHoje.getFullYear()}-${
     dataHoje.getMonth() + 1
@@ -9,6 +15,7 @@ export function Formulario() {
 
   console.log(dataHojeFormatada);
   function enviarRequisicao() {
+    setIsLoading(true);
     const userData = {
       // o DOM é um grande objeto
       nome: window.document.getElementById("nome").value,
@@ -21,6 +28,11 @@ export function Formulario() {
 
     axios.post(`${apiUrl}/revisoes/`, userData).then((resposta) => {
       console.log(resposta);
+      const url = document.getElementById("url") as HTMLInputElement;
+      const nome = document.getElementById("nome") as HTMLInputElement;
+      url.value = "";
+      nome.value = "";
+      setIsLoading(false);
       return;
     });
   }
@@ -86,7 +98,7 @@ export function Formulario() {
         className="btn btn-primary"
         onClick={enviarRequisicao}
       >
-        Enviar
+        {isLoading ? <Loading /> : "Enviar"}
       </button>
     </form>
   );

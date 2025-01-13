@@ -1,80 +1,48 @@
-import axios from "axios";
+import { inativarCard, revisarCard } from "../utils/revisarCard";
 import { Botao } from "./Botao";
-import { apiUrl } from "../environments";
 
 /* eslint-disable react/prop-types */
-export function Card(props: { revisao: Revisao; isRevisaoPequena?: boolean }) {
-  function revisarCard() {
-    console.log("ENTROU AQUI");
-    const input = document.getElementById(
-      props.isRevisaoPequena
-        ? `input-revisao-pequena-${props.revisao.id}`
-        : `input-${props.revisao.id}`
-    ) as HTMLInputElement;
-    console.log("input: ", input);
-    if (input.value) {
-      props.revisao.intervalo_revisao = parseInt(input.value);
-      props.revisao.proxima_data = undefined;
-      console.log("props.revisao: ", props.revisao);
-      const url = props.isRevisaoPequena
-        ? `${apiUrl}/revisao-pequena/${props.revisao.id}`
-        : `${apiUrl}/revisao/${props.revisao.id}`;
-      console.log("url: ", url);
-      axios.patch(url, props.revisao).then((res) => {
-        const botaoFazerGet = document.getElementById("fazer-get");
-        botaoFazerGet.click();
-      });
-    }
-  }
-
+export function Card({
+  revisao,
+  setIsLoading,
+}: {
+  revisao: Revisao;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   return (
     <>
       <div className="card m-2" style={{ width: "24rem" }}>
         <div className="card-body">
-          <h5 className="card-title">{props.revisao.nome}</h5>
+          <h5 className="card-title">{revisao.nome}</h5>
           <h6 className="card-subtitle mb-2 text-body-secondary">
-            {props.revisao.area}
+            {revisao.area}
           </h6>
-          <p className="card-text">
-            Intervalo: {props.revisao.intervalo_revisao}
-          </p>
-          <p className="card-text">
-            Última revisão: {props.revisao.ultima_data}
-          </p>
-          <p className="card-text">
-            Próxima revisão: {props.revisao.proxima_data}
-          </p>
-          <p className="card-text">Dificuldade: {props.revisao.dificuldade}</p>
-          <a
-            href={props.revisao.url_notion}
-            target="_blank"
-            className="card-link"
-          >
+          <p className="card-text">Intervalo: {revisao.intervalo_revisao}</p>
+          <p className="card-text">Última revisão: {revisao.ultima_data}</p>
+          <p className="card-text">Próxima revisão: {revisao.proxima_data}</p>
+          <p className="card-text">Dificuldade: {revisao.dificuldade}</p>
+          <a href={revisao.url_notion} target="_blank" className="card-link">
             Link do Notion
           </a>
           <div className="justify-content-center mt-3">
-            <label
-              className="mb-1"
-              htmlFor={
-                props.isRevisaoPequena
-                  ? `input-revisao-pequena-${props.revisao.id}`
-                  : `input-${props.revisao.id}`
-              }
-            >
+            <label className="mb-1" htmlFor={`input-${revisao.id}`}>
               Intervalo próxima Revisão:{" "}
             </label>
-            <input
-              className="mb-3"
-              type="number"
-              id={
-                props.isRevisaoPequena
-                  ? `input-revisao-pequena-${props.revisao.id}`
-                  : `input-${props.revisao.id}`
-              }
-            />
-            <Botao color="primary" clicarBotao={revisarCard}>
-              Revisado Hoje
-            </Botao>
+            <input className="mb-3" type="number" id={`input-${revisao.id}`} />
+            <div className="d-flex gap-3 justify-content-center">
+              <Botao
+                color="primary"
+                clicarBotao={() => revisarCard(revisao, setIsLoading)}
+              >
+                Revisado Hoje
+              </Botao>
+              <Botao
+                color="warning"
+                clicarBotao={() => inativarCard(revisao, setIsLoading)}
+              >
+                Desativar
+              </Botao>
+            </div>
           </div>
         </div>
       </div>

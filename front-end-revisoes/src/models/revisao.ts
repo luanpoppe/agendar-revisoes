@@ -7,4 +7,5 @@ type Revisao = {
   proxima_data: string;
   intervalo_revisao: number;
   dificuldade: "m" | "d" | "f";
+  ativo: boolean;
 };
