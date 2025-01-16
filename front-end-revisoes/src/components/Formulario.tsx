@@ -1,19 +1,24 @@
 import axios from "axios";
 import { apiUrl } from "../environments";
 import { Loading } from "./Loading";
+import { getRevisoes } from "../utils/revisarCard";
 
 type Props = {
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setCardsRevisoes: React.Dispatch<React.SetStateAction<any[]>>;
 };
 
-export function Formulario({ isLoading, setIsLoading }: Props) {
+export function Formulario({
+  isLoading,
+  setIsLoading,
+  setCardsRevisoes,
+}: Props) {
   const dataHoje = new Date();
   const dataHojeFormatada = `${dataHoje.getFullYear()}-${
     dataHoje.getMonth() + 1
   }-${dataHoje.getDate()}`;
 
-  console.log(dataHojeFormatada);
   function enviarRequisicao() {
     setIsLoading(true);
     const userData = {
@@ -33,7 +38,7 @@ export function Formulario({ isLoading, setIsLoading }: Props) {
       url.value = "";
       nome.value = "";
       setIsLoading(false);
-      return;
+      return getRevisoes(setIsLoading, setCardsRevisoes);
     });
   }
 
@@ -78,11 +83,9 @@ export function Formulario({ isLoading, setIsLoading }: Props) {
         <label htmlFor="dificuldade" className="form-label">
           Dificuldade
         </label>
-        <select id="dificuldade" className="form-select">
+        <select defaultValue={"m"} id="dificuldade" className="form-select">
           <option value="f">Fácil</option>
-          <option value="m" selected>
-            Médio
-          </option>
+          <option value="m">Médio</option>
           <option value="d">Difícil</option>
         </select>
       </div>

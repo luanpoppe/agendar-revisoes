@@ -1,6 +1,20 @@
 import { apiUrl } from "../environments";
 import axios from "axios";
 
+export function getRevisoes(
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  setCardsRevisoes: React.Dispatch<React.SetStateAction<any[]>>,
+  funcaoFilterCards: Function
+) {
+  setIsLoading(true);
+  return axios.get(`${apiUrl}/revisoes-hoje/`).then((resposta) => {
+    // cardsRevisoes = resposta.data; -> não pode passar assim, tem que passar com setCardsRevisoes
+    setCardsRevisoes(resposta.data);
+    setIsLoading(false);
+    funcaoFilterCards(resposta.data);
+  });
+}
+
 export function revisarCard(
   revisao: Revisao,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
