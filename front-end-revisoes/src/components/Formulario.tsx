@@ -1,19 +1,15 @@
 import axios from "axios";
 import { apiUrl } from "../environments";
 import { Loading } from "./Loading";
-import { getRevisoes } from "../utils/revisarCard";
+import { useGlobalContext } from "../GlobalContext";
 
 type Props = {
-  isLoading: boolean;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  setCardsRevisoes: React.Dispatch<React.SetStateAction<any[]>>;
+  handleGetRevisao: any;
 };
 
-export function Formulario({
-  isLoading,
-  setIsLoading,
-  setCardsRevisoes,
-}: Props) {
+export function Formulario({ handleGetRevisao }: Props) {
+  const { isLoading, setIsLoading, setCardsRevisoes } = useGlobalContext();
+
   const dataHoje = new Date();
   const dataHojeFormatada = `${dataHoje.getFullYear()}-${
     dataHoje.getMonth() + 1
@@ -38,7 +34,7 @@ export function Formulario({
       url.value = "";
       nome.value = "";
       setIsLoading(false);
-      return getRevisoes(setIsLoading, setCardsRevisoes);
+      return handleGetRevisao();
     });
   }
 

@@ -1,14 +1,12 @@
+import { useGlobalContext } from "../GlobalContext";
 import { inativarCard, revisarCard } from "../utils/revisarCard";
 import { Botao } from "./Botao";
 
+type Props = { revisao: Revisao };
+
 /* eslint-disable react/prop-types */
-export function Card({
-  revisao,
-  setIsLoading,
-}: {
-  revisao: Revisao;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+export function Card({ revisao }: Props) {
+  const { setIsLoading } = useGlobalContext();
   return (
     <>
       <div className="card m-2" style={{ width: "24rem" }}>

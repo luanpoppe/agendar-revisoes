@@ -6,16 +6,23 @@ import { Card } from "./components/Card";
 import { Formulario } from "./components/Formulario";
 import { Loading } from "./components/Loading";
 import { getRevisoes } from "./utils/revisarCard";
+import { useGlobalContext } from "./GlobalContext";
 
 function App() {
   // inicializado quando carrega a página
-  let [cardsRevisoes, setCardsRevisoes] = useState<Revisao[]>([]);
-  let [cardsRevisoesFiltrados, setCardsRevisoesFiltrados] = useState<Revisao[]>(
-    []
-  );
-  let [qtsCardsMostrar, setQtsCardsMostrar] = useState(1);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [shouldShowNewCards, setShouldShowNewCards] = useState<boolean>(false);
+
+  let {
+    cardsRevisoes,
+    cardsRevisoesFiltrados,
+    isLoading,
+    qtsCardsMostrar,
+    setCardsRevisoes,
+    setCardsRevisoesFiltrados,
+    setIsLoading,
+    setQtsCardsMostrar,
+    setShouldShowNewCards,
+    shouldShowNewCards,
+  } = useGlobalContext();
 
   function filterCards(shouldShowNewCards: boolean, cardsRevisoes: Revisao[]) {
     if (shouldShowNewCards) {
@@ -31,22 +38,24 @@ function App() {
     setQtsCardsMostrar(1);
   }
 
-  useEffect(() => {
+  function handleGetRevisao() {
     getRevisoes(setIsLoading, setCardsRevisoes, (cardsRevisoes: Revisao[]) =>
       filterCards(shouldShowNewCards, cardsRevisoes)
     );
-  }, []);
+  }
+
+  useEffect(handleGetRevisao, []);
 
   return (
     <>
       <Titulo></Titulo>
-      <Formulario
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-        setCardsRevisoes={setCardsRevisoes}
-      ></Formulario>
+      <Formulario handleGetRevisao={handleGetRevisao} />
       <h3>Pegue as revisões do dia aqui:</h3>
-      <Botao buttonId="fazer-get" clicarBotao={getRevisoes} color={"primary"}>
+      <Botao
+        buttonId="fazer-get"
+        clicarBotao={handleGetRevisao}
+        color={"primary"}
+      >
         Clique aqui
       </Botao>
       <div className="mt-2">
@@ -61,14 +70,7 @@ function App() {
         <div className="d-flex flex-column align-content-center flex-wrap">
           {cardsRevisoesFiltrados.slice(0, qtsCardsMostrar).map((item) => {
             if (isLoading) return <Loading />;
-            else
-              return (
-                <Card
-                  key={item.id}
-                  revisao={item}
-                  setIsLoading={setIsLoading}
-                ></Card>
-              );
+            else return <Card key={item.id} revisao={item}></Card>;
           })}
         </div>
       </section>
