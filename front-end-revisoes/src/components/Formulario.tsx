@@ -8,7 +8,7 @@ type Props = {
 };
 
 export function Formulario({ handleGetRevisao }: Props) {
-  const { isLoading, setIsLoading, setCardsRevisoes } = useGlobalContext();
+  const { isLoading, setIsLoading } = useGlobalContext();
 
   const dataHoje = new Date();
   const dataHojeFormatada = `${dataHoje.getFullYear()}-${
@@ -19,12 +19,12 @@ export function Formulario({ handleGetRevisao }: Props) {
     setIsLoading(true);
     const userData = {
       // o DOM é um grande objeto
-      nome: window.document.getElementById("nome").value,
-      area: window.document.getElementById("area").value,
-      intervalo_revisao: window.document.getElementById("intervalo").value,
-      // ultima_data: window.document.getElementById("ultima-data").value,
-      dificuldade: window.document.getElementById("dificuldade").value,
-      url_notion: window.document.getElementById("url").value,
+      nome: window.document.getElementById("nome")["value"],
+      area: window.document.getElementById("area")["value"],
+      intervalo_revisao: window.document.getElementById("intervalo")["value"],
+      // ultima_data: window.document.getElementById("ultima-data")["value"],
+      dificuldade: window.document.getElementById("dificuldade")["value"],
+      url_notion: window.document.getElementById("url")["value"],
     };
 
     axios.post(`${apiUrl}/revisoes/`, userData).then((resposta) => {
