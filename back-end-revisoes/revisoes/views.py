@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from revisoes.models import RevisoesModel
 from revisoes.serializers import RevisoesSerializer
 from utils.manage_data import adicionarRevisao, daysFromToday, formatDate
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 
 @extend_schema(
@@ -33,33 +34,48 @@ def revisoesView(request):
 
 @api_view(["GET", "PATCH", "DELETE"])
 def updateReview(request, id):
-  try:
-    model = RevisoesModel.objects.get(pk=id)
-    serializer = RevisoesSerializer(model, data=request.data, partial=True)
-    
-    if request.method == "GET":
-      serializer = RevisoesSerializer(model)
-      return Response(serializer.data)
-    
-    if request.method == "PATCH":
-      try:
-        if serializer.is_valid(raise_exception=True):
-          intervalo = serializer.validated_data["intervalo_revisao"]
-          serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo, RevisoesModel)
-          serializer.validated_data["ultima_data"] = formatDate(datetime.now())
-          serializer.save()
-          return Response(serializer.data)
-      except:
-        return Response({"msg": "Passe um intervalo para a próxima revisão"}, status=400)
+    try:
+        model = RevisoesModel.objects.get(pk=id)
+        serializer = RevisoesSerializer(model, data=request.data, partial=True)
 
-    if request.method == "DELETE":
-        model.delete()
-        return Response({"msg": f"Item de id {id} deletado com sucesso"})
-    
-  except:
-    return Response({
-      "msg": f"A revisão com o id {id} não existe"
-    })
+        if request.method == "GET":
+            serializer = RevisoesSerializer(model)
+            return Response(serializer.data)
+
+        if request.method == "PATCH":
+            try:
+                if serializer.is_valid(raise_exception=True):
+                    intervalo = serializer.validated_data["intervalo_revisao"]
+                    serializer.validated_data["proxima_data"] = adicionarRevisao(
+                        intervalo, RevisoesModel
+                    )
+
+                    # Get the current local time
+                    current_time = timezone.localtime(timezone.now())
+                    # Check if the current time is between 12:00 AM and 3:00 AM
+                    if current_time.hour < 3:
+                        # Subtract one day to get yesterday's date
+                        current_time -= timedelta(days=1)
+                    # Pass the (potentially adjusted) date to the serializer
+                    serializer.validated_data["ultima_data"] = formatDate(current_time)
+
+                    # VERSÃO ANTIGA
+                    # serializer.validated_data["ultima_data"] = formatDate(
+                    #     timezone.localtime(timezone.now())
+                    # )
+                    serializer.save()
+                    return Response(serializer.data)
+            except:
+                return Response(
+                    {"msg": "Passe um intervalo para a próxima revisão"}, status=400
+                )
+
+        if request.method == "DELETE":
+            model.delete()
+            return Response({"msg": f"Item de id {id} deletado com sucesso"})
+
+    except:
+        return Response({"msg": f"A revisão com o id {id} não existe"})
 
 @api_view(["GET"])
 def revisoesHojeView(request):
@@ -95,31 +111,43 @@ def pequenasRevisoesView(request):
 
 @api_view(["GET", "PATCH", "DELETE"])
 def updatePequenasRevisoes(request, id):
-  try:
-    model = RevisoesModel.objects.get(pk=id)
-    serializer = RevisoesSerializer(model, data=request.data, partial=True)
-    
-    if request.method == "GET":
-      serializer = RevisoesSerializer(model)
-      return Response(serializer.data)
-    
-    if request.method == "PATCH":
-      try:
-        if serializer.is_valid(raise_exception=True):
-          intervalo = serializer.validated_data["intervalo_revisao"]
-          serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo, RevisoesModel)
-          serializer.validated_data["ultima_data"] = formatDate(datetime.now())
-          serializer.save()
-          return Response(serializer.data)
-      except:
-        return Response({"msg": "Passe um intervalo para a próxima revisão"}, status=400)
+    try:
+        model = RevisoesModel.objects.get(pk=id)
+        serializer = RevisoesSerializer(model, data=request.data, partial=True)
 
-    if request.method == "DELETE":
-        model.delete()
-        return Response({"msg": f"Item de id {id} deletado com sucesso"})
-    
-  except:
-    return Response({
+        if request.method == "GET":
+            serializer = RevisoesSerializer(model)
+            return Response(serializer.data)
+
+        if request.method == "PATCH":
+            try:
+                if serializer.is_valid(raise_exception=True):
+                    intervalo = serializer.validated_data["intervalo_revisao"]
+                    serializer.validated_data["proxima_data"] = adicionarRevisao(intervalo, RevisoesModel)
+                                        # Get the current local time
+                    current_time = timezone.localtime(timezone.now())
+                    # Check if the current time is between 12:00 AM and 3:00 AM
+                    if current_time.hour < 3:
+                        # Subtract one day to get yesterday's date
+                        current_time -= timedelta(days=1)
+                    # Pass the (potentially adjusted) date to the serializer
+                    serializer.validated_data["ultima_data"] = formatDate(current_time)
+
+                    #  VERSÃO ANTIGA
+                    # serializer.validated_data["ultima_data"] = formatDate(
+                    #     timezone.localtime(timezone.now())
+                    # )
+                    serializer.save()
+                    return Response(serializer.data)
+            except:
+                return Response({"msg": "Passe um intervalo para a próxima revisão"}, status=400)
+
+        if request.method == "DELETE":
+            model.delete()
+            return Response({"msg": f"Item de id {id} deletado com sucesso"})
+
+    except:
+        return Response({
       "msg": f"A revisão com o id {id} não existe"
     })
 
