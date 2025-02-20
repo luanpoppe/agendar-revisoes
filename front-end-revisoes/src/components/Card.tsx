@@ -1,3 +1,4 @@
+import { differenceInDays } from "date-fns";
 import { useGlobalContext } from "../GlobalContext";
 import { inativarCard, revisarCard } from "../utils/revisarCard";
 import { Botao } from "./Botao";
@@ -16,6 +17,10 @@ export function Card({ revisao }: Props) {
             {revisao.area}
           </h6>
           <p className="card-text">Intervalo: {revisao.intervalo_revisao}</p>
+          <p className="card-text">
+            Intervalo na prática:{" "}
+            {differenceInDays(revisao.proxima_data, revisao.ultima_data)}
+          </p>
           <p className="card-text">Última revisão: {revisao.ultima_data}</p>
           <p className="card-text">Próxima revisão: {revisao.proxima_data}</p>
           <p className="card-text">Dificuldade: {revisao.dificuldade}</p>
