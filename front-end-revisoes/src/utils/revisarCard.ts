@@ -1,5 +1,7 @@
+import toast from "react-hot-toast";
 import { apiUrl } from "../environments";
 import axios from "axios";
+import { differenceInDays } from "date-fns";
 
 export function getRevisoes(
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
@@ -30,7 +32,16 @@ export function revisarCard(
     console.log("revisao: ", revisao);
 
     const url = `${apiUrl}/revisao/${revisao.id}`;
-    axios.patch(url, revisao).then((res) => {
+    axios.patch(url, revisao).then(async (res) => {
+      const assuntoRevisao = await axios.get(url);
+      console.log("assuntoRevisao.data: ", assuntoRevisao.data);
+      const intervaloDeVerdade = differenceInDays(
+        assuntoRevisao.data.proxima_data,
+        assuntoRevisao.data.ultima_data
+      );
+      toast.success(`Intervalo de verdade adicionado: ${intervaloDeVerdade}`, {
+        duration: 10000,
+      });
       const botaoFazerGet = document.getElementById("fazer-get");
       botaoFazerGet.click();
       setIsLoading(false);
