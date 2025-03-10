@@ -8,6 +8,7 @@ import { Loading } from "./components/Loading";
 import { getRevisoes } from "./utils/revisarCard";
 import { useGlobalContext } from "./GlobalContext";
 import { getRevisoesAmanha } from "./services/get-revisoes";
+import { addDays, format, isTomorrow } from "date-fns";
 
 function App() {
   // inicializado quando carrega a página
@@ -27,7 +28,6 @@ function App() {
   const [revisoesAmanha, setRevisoesAmanha] = useState(999);
 
   function filterCards(shouldShowNewCards: boolean, cardsRevisoes: Revisao[]) {
-    console.log("shouldShowNewCards: ", shouldShowNewCards);
     if (shouldShowNewCards) {
       setCardsRevisoesFiltrados(
         cardsRevisoes.filter((c) => c.intervalo_revisao == 0)
@@ -48,8 +48,13 @@ function App() {
       filterCards(shouldShowNewCardsParam, cardsRevisoes)
     );
 
+    const hoje = new Date();
+    const amanha = hoje.getHours() > 4 ? addDays(hoje, 1) : addDays(hoje, 0);
+    const amanhaFormatado = format(amanha, "yyyy-MM-dd");
     const revisoesAmanha = await getRevisoesAmanha();
-    setRevisoesAmanha(revisoesAmanha.length);
+    setRevisoesAmanha(
+      revisoesAmanha.filter((r) => r.proxima_data == amanhaFormatado).length
+    );
   }
 
   useEffect(() => {
