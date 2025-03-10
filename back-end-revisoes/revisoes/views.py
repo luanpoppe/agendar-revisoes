@@ -88,6 +88,19 @@ def revisoesHojeView(request):
         serializer = RevisoesSerializer(revisoes, many=True)
         return Response(serializer.data)
 
+
+@api_view(["GET"])
+def revisoesAmanhaView(request):
+    if request.method == "GET":
+        data = formatDate(daysFromToday(1)).split("-")
+        data = datetime(year=int(data[0]), month=int(data[1]), day=int(data[2])).date()
+        revisoes = RevisoesModel.objects.filter(
+            proxima_data__lte=data, ativo=True
+        ).order_by("intervalo_revisao", "nome")
+        serializer = RevisoesSerializer(revisoes, many=True)
+        return Response(serializer.data)
+
+
 @api_view(["GET", "POST"])
 def pequenasRevisoesView(request):
   if(request.method == "POST"):

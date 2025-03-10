@@ -5,7 +5,15 @@ from drf_yasg.views import get_schema_view
 from drf_spectacular.views import SpectacularSwaggerView, SpectacularAPIView
 from assunto_revisao.views import AssuntosListCreateView
 
-from revisoes.views import revisoesHojeView, revisoesView, updateReview, pequenasRevisoesView, updatePequenasRevisoes, pequenasRevisoesHojeView
+from revisoes.views import (
+    revisoesAmanhaView,
+    revisoesHojeView,
+    revisoesView,
+    updateReview,
+    pequenasRevisoesView,
+    updatePequenasRevisoes,
+    pequenasRevisoesHojeView,
+)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -31,6 +39,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("revisoes/", revisoesView),
     path("revisoes-hoje/", revisoesHojeView),
+    path("revisoes-amanha/", revisoesAmanhaView),
     path("revisao/<int:id>", updateReview),
     path("revisoes-pequenas/", pequenasRevisoesView),
     path("revisao-pequena/<int:id>", updatePequenasRevisoes),
